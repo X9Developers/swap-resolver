@@ -1,0 +1,1 @@
+lnd --noseedbackup --rpclisten=localhost:20002 --listen=localhost:20012 --restlisten=9002 --datadir=data --logdir=logs  --nobootstrap --no-macaroons --bitcoin.active --bitcoin.simnet  --btcd.rpcuser=xu --btcd.rpcpass=xu --debuglevel=debug --alias="Exchange B BTC on 20002/20012"
