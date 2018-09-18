@@ -1,1 +1,1 @@
-lnd --noencryptwallet --rpclisten=localhost:20001 --listen=localhost:20011 --restlisten=9001 --datadir=data --logdir=logs  --nobootstrap --no-macaroons --litecoin.active --litecoin.testnet  --ltcd.rpcuser=xu --ltcd.rpcpass=xu --debuglevel=debug --alias="Exchange B LTC on 20001/20011"
+lnd --noseedbackup --rpclisten=localhost:20001 --listen=localhost:20011 --restlisten=9001 --datadir=data --logdir=logs  --nobootstrap --no-macaroons --litecoin.active --litecoin.testnet  --ltcd.rpcuser=xu --ltcd.rpcpass=xu --debuglevel=debug --alias="Exchange B LTC on 20001/20011"
