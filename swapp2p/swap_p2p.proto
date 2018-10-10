@@ -12,6 +12,7 @@ package swapresolver;
 enum CoinType {
   BTC = 0;
   LTC = 1;
+  XSN = 2;
 }
 
 service P2P {

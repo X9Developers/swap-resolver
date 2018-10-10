@@ -151,8 +151,10 @@ func takeOrder(ctx *cli.Context) error{
 		req.MakerCoin = pb.CoinType_BTC
 	case "LTC":
 		req.MakerCoin = pb.CoinType_LTC
+	case "XSN":
+                req.MakerCoin = pb.CoinType_XSN
 	default:
-		return fmt.Errorf("Invalid maker coin %v. Valid values are BTC and LTC only.", ctx.String("maker_coin"))
+		return fmt.Errorf("Invalid maker coin %v. Valid values are BTC, LTC and XSN only.", ctx.String("maker_coin"))
 	}
 
 	if !ctx.IsSet("taker_amount"){
@@ -168,8 +170,10 @@ func takeOrder(ctx *cli.Context) error{
 		req.TakerCoin = pb.CoinType_BTC
 	case "LTC":
 		req.TakerCoin = pb.CoinType_LTC
+	case "XSN":
+                req.TakerCoin = pb.CoinType_XSN
 	default:
-		return fmt.Errorf("Invalid taker coin %v. Valid values are BTC and LTC only.", ctx.String("taker_coin"))
+		return fmt.Errorf("Invalid taker coin %v. Valid values are BTC, LTC and XSN only.", ctx.String("taker_coin"))
 	}
 
 	if req.MakerCoin == req.TakerCoin{

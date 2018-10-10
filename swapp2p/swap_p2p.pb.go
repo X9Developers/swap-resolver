@@ -42,15 +42,18 @@ type CoinType int32
 const (
 	CoinType_BTC CoinType = 0
 	CoinType_LTC CoinType = 1
+	CoinType_XSN CoinType = 2
 )
 
 var CoinType_name = map[int32]string{
 	0: "BTC",
 	1: "LTC",
+	2: "XSN",
 }
 var CoinType_value = map[string]int32{
 	"BTC": 0,
 	"LTC": 1,
+	"XSN": 2,
 }
 
 func (x CoinType) String() string {

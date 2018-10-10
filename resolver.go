@@ -117,6 +117,9 @@ func (s *hashResolverServer) ResolveHash(ctx context.Context, req *pb.ResolveReq
 		switch deal.makerCoin{
 		case pbp2p.CoinType_BTC:
 
+		case pbp2p.CoinType_XSN:
+			cmdLnd = s.p2pServer.lnXSN
+
 		case pbp2p.CoinType_LTC:
 			cmdLnd = s.p2pServer.lnLTC
 
@@ -171,6 +174,7 @@ type P2PServer struct {
 	xuPeer 	   	pbp2p.P2PClient
 	lnLTC 		lnrpc.LightningClient
 	lnBTC		lnrpc.LightningClient
+	lnXSN           lnrpc.LightningClient
 	mu     	    sync.Mutex // protects data structure
 }
 
@@ -201,6 +205,12 @@ func (s *P2PServer) TakeOrder(ctx context.Context, req *pbp2p.TakeOrderReq) (*pb
 		if err != nil{
 			return nil,fmt.Errorf("Can't getInfo from LTC LND - %v", err)
 		}
+
+	case pbp2p.CoinType_XSN:
+                info, err = s.lnXSN.GetInfo(ctxt, &lnrpc.GetInfoRequest{})
+                if err != nil{
+                        return nil,fmt.Errorf("Can't getInfo from XSN LND - %v", err)
+                }
 
 	}
 	log.Printf("%v getinfo:%v",req.TakerCoin.String(),spew.Sdump(info))
@@ -288,6 +298,13 @@ func (s *P2PServer) SuggestDeal(ctx context.Context, req *pbp2p.SuggestDealReq) 
 		if err != nil{
 			return nil,fmt.Errorf("Can't getInfo from LTC LND - %v", err)
 		}
+
+	case pbp2p.CoinType_XSN:
+                info, err = s.lnXSN.GetInfo(ctxt, &lnrpc.GetInfoRequest{})
+                if err != nil{
+                        return nil,fmt.Errorf("Can't getInfo from XSN LND - %v", err)
+                }
+
 	}
 	log.Printf("%v getinfo:%v",req.TakerCoin.String(),spew.Sdump(info))
 	spew.Sdump(info)
@@ -356,7 +373,10 @@ func (s *P2PServer) Swap(ctx context.Context, req *pbp2p.SwapReq) (*pbp2p.SwapRe
 	case pbp2p.CoinType_BTC:
 
 	case pbp2p.CoinType_LTC:
-		cmdLnd = s.lnBTC
+		cmdLnd = s.lnXSN
+
+	case pbp2p.CoinType_XSN:
+		cmdLnd = s.lnLTC
 
 	}
 
@@ -385,11 +405,12 @@ func (s *P2PServer) Swap(ctx context.Context, req *pbp2p.SwapReq) (*pbp2p.SwapRe
 	return ret, nil
 }
 
-func newP2PServer(xuPeer pbp2p.P2PClient, lnLTC lnrpc.LightningClient, lnBTC lnrpc.LightningClient) *P2PServer {
+func newP2PServer(xuPeer pbp2p.P2PClient, lnLTC lnrpc.LightningClient, lnBTC lnrpc.LightningClient, lnXSN lnrpc.LightningClient) *P2PServer {
 	s := &P2PServer{
 		xuPeer: xuPeer,
 		lnLTC: lnLTC,
 		lnBTC: lnBTC,
+		lnXSN: lnXSN,
 	}
 	return s
 }
@@ -450,6 +471,11 @@ func main() {
 			Value: "localhost:10002",
 			Usage: "RPC host:port of LND connected to LTC chain",
 		},
+		cli.StringFlag{
+                        Name:  "lnd-rpc-xsn",
+                        Value: "localhost:10003",
+                        Usage: "RPC host:port of LND connected to XSN chain",
+                },
 
 	}
 
@@ -461,6 +487,9 @@ func main() {
 
 		lnBTC, close := getLNDClient(c,"lnd-rpc-btc")
 		defer close()
+
+		lnXSN, close := getLNDClient(c,"lnd-rpc-xsn")
+                defer close()
 
 		xuPeer, close := getClient(c)
 		defer close()
@@ -475,7 +504,7 @@ func main() {
 
 		var opts []grpc.ServerOption
 		grpcServer := grpc.NewServer(opts...)
-		p2pServer := newP2PServer(xuPeer, lnLTC, lnBTC)
+		p2pServer := newP2PServer(xuPeer, lnLTC, lnBTC, lnXSN)
 		pb.RegisterHashResolverServer(grpcServer, newServer(p2pServer))
 		pbp2p.RegisterP2PServer(grpcServer, p2pServer)
 		log.Printf("Server ready")
