@@ -72,7 +72,7 @@ The command is executed against the `swap-resolver` which controls the `lnd`'s.
 ```shell
 $ cd $GOPATH/src/github.com/ExchangeUnion/swap-resolver
 
-$ go run cmd/resolver-cli/main.go --rpcserver localhost:7001 takeorder --order_id=123 --maker_amount 200 --maker_coin XSN --taker_amount 10000 --taker_coin=LTC
+$ ./swap-resolver --rpcserver localhost:7001 takeorder --order_id=123 --maker_amount 200 --maker_coin XSN --taker_amount 10000 --taker_coin=LTC
 
 2018/10/10 16:10:33 Starting takeOrder command -  (*swapresolver.TakeOrderReq)(0xc420099f50)(orderid:"123" taker_amount:10000 taker_coin:LTC maker_amount:200 maker_coin:XSN )
 2018/10/10 16:10:34 Swap completed successfully.
