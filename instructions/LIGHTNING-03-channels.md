@@ -2,12 +2,12 @@
 
 # Lightning Payment Channels
 
-## Bitcoin
+## XSN
 
-Exchange A opens a bitcoin payment channel to Exchange B and pushes over 0.1 BTC at the same time. Exchange B finally got some bitcoin, yay!
+Exchange A opens a xsn payment channel to Exchange B and pushes over 0.1 XSN at the same time. Exchange B finally got some coins, yay!
 
 ```shell
-$ xa-lnd-btc openchannel --node_key=$XB_BTC_PUBKEY --local_amt=16000000 --push_amt=1000000 --sat_per_byte=1000
+$ xa-lnd-xsn openchannel --node_key=$XB_XSN_PUBKEY --local_amt=16000000 --push_amt=1000000 --sat_per_byte=1000
 {
 	"funding_txid": "ea64f9bc10b9b81a3cdec7806b50fd0ba2212dee536cae4c3731b9dcdaa7320a"
 }
@@ -19,22 +19,22 @@ The output gives you the `txid` of the funding transaction for the channel. The 
 Until confirmed (which could take a while; testnet...), the pending channels can be seen with the `pendingchannels` command
 
 ```shell
-$ xa-lnd-btc  pendingchannels
+$ xa-lnd-xsn  pendingchannels
 {
     "total_limbo_balance": "0",
     "pending_open_channels": [
         {
             "channel": {
-                "remote_node_pub": "022b74059a18bb77c6c906377e92023cc40ae9695920df0d056fc95f135221e69f",
-                "channel_point": "246c05860d1589898f9a22317915c935b021a198ae93c1eacc6fc835ca96b5ac:0",
+                "remote_node_pub": "02492ed0c9be232bd2ba82888a8977c3de2a47ff3d6f12428ca860473d37b5ccc8",
+                "channel_point": "189148d065850eea0b192f0d8f71a9ec6a1ea2d45b0a3067540d1e4fc892e6bc:0",
                 "capacity": "16000000",
-                "local_balance": "12977556",
-                "remote_balance": "3000000"
+                "local_balance": "14999817",
+                "remote_balance": "1000000"
             },
             "confirmation_height": 0,
-            "commit_fee": "22444",
+            "commit_fee": "183",
             "commit_weight": "724",
-            "fee_per_kw": "31000"
+            "fee_per_kw": "253"
         }
     ],
     "pending_closing_channels": [
@@ -49,20 +49,20 @@ $ xa-lnd-btc  pendingchannels
 Once the channel is opened, Exchange A lists the bitcoin payment channel as follows
 
 ```shell
-$ xa-lnd-btc listchannels
+$ xa-lnd-xsn listchannels
 {
     "channels": [
         {
             "active": true,
-            "remote_pubkey": "022b74059a18bb77c6c906377e92023cc40ae9695920df0d056fc95f135221e69f",
-            "channel_point": "246c05860d1589898f9a22317915c935b021a198ae93c1eacc6fc835ca96b5ac:0",
-            "chan_id": "1513035751963164672",
+            "remote_pubkey": "03e634d7505a8c2840700bbf38a696409e4ec73e59175f2b24abf9df8014fd2016",
+            "channel_point": "b8f58dd932368fe66e1dcbbdce7327a86bba4a3eadb37b0ada3206a3da8fe589:0",
+            "chan_id": "20530081113964544",
             "capacity": "16000000",
-            "local_balance": "12977556",
-            "remote_balance": "3000000",
-            "commit_fee": "22444",
+            "local_balance": "14999817",
+            "remote_balance": "1000000",
+            "commit_fee": "183",
             "commit_weight": "724",
-            "fee_per_kw": "31000",
+            "fee_per_kw": "253",
             "unsettled_balance": "0",
             "total_satoshis_sent": "0",
             "total_satoshis_received": "0",
