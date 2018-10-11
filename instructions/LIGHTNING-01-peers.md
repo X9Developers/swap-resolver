@@ -2,16 +2,16 @@
 
 # Lightning nodes Setup
 
-Once we installed all components and the Bitcoin & Litecoin testnet blockchains are synced, we can set up the `lnd` and `swap-resolver` processes. We are going to setup two `swap-resolver` processes, simulating two exchanges A & B running `xud` and four `lnd` processes, one for BTC and one for LTC for each exchange. It takes some time until `lnd` synced with the `btcd` and `ltcd` daemons. It is OK to setup the `lnd`s and `swap-resolver`s in parallel.
+Once we installed all components and the XSN & Litecoin testnet blockchains are synced, we can set up the `lnd` and `swap-resolver` processes. We are going to setup two `swap-resolver` processes, simulating two exchanges A & B running `xud` and four `lnd` processes, one for XSN and one for LTC for each exchange. It takes some time until `lnd` synced with the `xsnd` and `litecoin` daemons. It is OK to setup the `lnd`s and `swap-resolver`s in parallel.
 
 ## Aliases
 To make our life easier with `lncli`, we recommend setting up aliases. Add the following to to `~/.bash_profile` or `~/.profile` and source it:
 
 ```bash
 #Adding lncli aliases
-alias xa-lnd-btc='lncli --network testnet --rpcserver=localhost:10002 --no-macaroons'
+alias xa-lnd-xsn='lncli --network testnet --rpcserver=localhost:10003 --no-macaroons'
 alias xa-lnd-ltc='lncli --network testnet --rpcserver=localhost:10001 --no-macaroons'
-alias xb-lnd-btc='lncli --network testnet --rpcserver=localhost:20002 --no-macaroons'
+alias xb-lnd-xsn='lncli --network testnet --rpcserver=localhost:20003 --no-macaroons'
 alias xb-lnd-ltc='lncli --network testnet --rpcserver=localhost:20001 --no-macaroons'
 ```
 
@@ -22,28 +22,28 @@ To make life even easier, we find the following directory structure in `$GOPATH/
 
 *	exchange-a
 	+	lnd (resolve.conf)
-		*	btc (start.bash)
+		*	xsn (start.bash)
 		*	ltc (start.bash)
-	+	xud (start.bash)
+	+	resolver (start.bash)
 *	exchange-b
 	+	lnd (resolve.conf)
-		*	btc (start.bash)
+		*	xsn (start.bash)
 		*	ltc (start.bash)
-	+	xud (start.bash)
+	+	resolver (start.bash)
 
 The `start.bash` script invokes the LND process using the right parameters (ports, etc). The `resolve.conf` is needed for the swap-resolver to function. Just FYI, no need to do anything for now.
 
 ## Exchange A
-### Launch `lnd-btc`
-Open a terminal to set Exchange A's `lnd-btc` daemon
+### Launch `lnd-xsn`
+Open a terminal to set Exchange A's `lnd-xsn` daemon
 ```shell
-cd $GOPATH/src/github.com/ExchangeUnion/swap-resolver/exchange-a/lnd/btc/
+cd $GOPATH/src/github.com/ExchangeUnion/swap-resolver/exchange-a/lnd/xsn/
 ./start.bash
 ```
 
 check progress with
 ```shell
-xa-lnd-btc getinfo
+xa-lnd-xsn getinfo
 ```
 ### Launch `lnd-ltc`
 Open a terminal to set Exchange A's `lnd-ltc` daemon
@@ -60,22 +60,22 @@ xa-lnd-ltc getinfo
 ### Launch `swap-resolver`
 Open a terminal to set Exchange A's `xud` daemon
 ```shell
-cd $GOPATH/src/github.com/ExchangeUnion/swap-resolver/exchange-a/xud/
+cd $GOPATH/src/github.com/ExchangeUnion/swap-resolver/exchange-a/resolver/
 ./start.bash
 ```
 
 
 ## Exchange B
-### Launch `lnd-btc`
-Open a terminal to set Exchange B's `lnd-btc` daemon
+### Launch `lnd-xsn`
+Open a terminal to set Exchange B's `lnd-xsn` daemon
 ```shell
-cd $GOPATH/src/github.com/ExchangeUnion/swap-resolver/exchange-b/lnd/btc/
+cd $GOPATH/src/github.com/ExchangeUnion/swap-resolver/exchange-b/lnd/xsn/
 ./start.bash
 ```
 
 check progress with
 ```shell
-xb-lnd-btc getinfo
+xb-lnd-xsn getinfo
 ```
 ### Launch `lnd-ltc`
 Open a terminal to set Exchange B's `lnd-ltc` daemon
@@ -89,41 +89,40 @@ check progress with
 xb-lnd-ltc getinfo
 ```
 ### Launch `swap-resolver`
-Open a terminal to set Exchange B's `xud` daemon
+Open a terminal to set Exchange B's `resolver` daemon
 ```shell
-cd $GOPATH/src/github.com/ExchangeUnion/swap-resolver/exchange-b/xud/
+cd $GOPATH/src/github.com/ExchangeUnion/swap-resolver/exchange-b/resolver/
 ./start.bash
 ```
 
 
 ## Coffee time v2
 
-Give the four `lnd`s some time to sync with `btcd` and `ltcd`. You can check the status by using the `getinfo` command (use the cli terminal for this). You would want to see `"synced_to_chain": true,` for all four `lnd`s.
+Give the four `lnd`s some time to sync with `xsnd` and `litecoind`. You can check the status by using the `getinfo` command (use the cli terminal for this). You would want to see `"synced_to_chain": true,` for all four `lnd`s.
 
 ### Check status 
 
-Example - Check the status of Exchange A's `lnd-btc`:
+Example - Check the status of Exchange A's `lnd-xsn`:
 
 ```shell
-xa-lnd-btc getinfo
+xa-lnd-xsn getinfo
 {
-    "identity_pubkey": "035e3d3884e9a26dcd238b2b2d1ef608a31888365fed327b4af563671a2ee49bb6",
-    "alias": "035e3d3884e9a26dcd23",
+    "identity_pubkey": "02b07e2983eb179a7c3172c927eee88303f68c4e6ca0f21a971e73ec465da77149",
+    "alias": "Exchange A XSN on 10003/10013",
     "num_pending_channels": 0,
-    "num_active_channels": 1,
-    "num_peers": 1,
-    "block_height": 1356729,
-    "block_hash": "00000000007dd1ef9454e52b3986b939ed91b7f81587c95ff0921977be316114",
+    "num_active_channels": 0,
+    "num_peers": 0,
+    "block_height": 21402,
+    "block_hash": "3eb5c50a752798edadc1df1593cf94db54e18af3fccd66fbaf4a7c8a768c305f",
     "synced_to_chain": true,
     "testnet": true,
     "chains": [
-        "bitcoin"
+        "xsncoin"
     ],
     "uris": [
     ],
-    "best_header_timestamp": "1533285232",
-    "version": "0.4.2-beta commit=6a8368a632d22762299686f7ea94eb777a5887c8"
-}
+    "best_header_timestamp": "1539258342",
+    "version": "0.5.0-beta commit=fec8a2f221c42fde67f63a5ba43b2a80b118e1cc"
 ```
 
 
@@ -131,9 +130,9 @@ xa-lnd-btc getinfo
 
 ## Balance after creating
 
-Query Exchange A wallet balances for both `Bitcoin` and `Litecoin` after creation (we expect to see zeros!)
+Query Exchange A wallet balances for both `XSN` and `Litecoin` after creation (we expect to see zeros!)
 ```shell
-$ xa-lnd-btc walletbalance
+$ xa-lnd-xsn walletbalance
 {
     "total_balance": "0",
     "confirmed_balance": "0",
@@ -147,13 +146,13 @@ $ xa-lnd-ltc walletbalance
 }
 ```
 
-## Create BTC and LTC addresses for deposit
+## Create BTC and XSN addresses for deposit
 
-Create Segwit addresses for both, `bitcoin` and `litecoin`
+Create Segwit addresses for both, `xsn` and `litecoin`
 ```shell
-$ xa-lnd-btc newaddress np2wkh 
+$ xa-lnd-xsn newaddress np2wkh 
 {
-        "address": "2NBRavXuXmbd73tRvgCAHhTiSuPoa3LqKdd"
+        "address": "8pyfqUssgZYXEXT7eqQHCJFrpa8mHGw82v"
 }
 $ xa-lnd-ltc newaddress np2wkh 
 {
@@ -163,14 +162,14 @@ $ xa-lnd-ltc newaddress np2wkh
 
 ## Send some money
 
-Send some BTCt (0.2 or more is great) and some LTCt (10 is great) to Exchange A's addresses. You can get some for free via [bitcoin testnet faucets](README.bitcoin.md/#bitcoin-testnet-faucet) and [litecoin testnet faucets](README.litecoin.md/#litecoin-testnet-faucet). Balances should appear in the wallet once the transactions are confirmed.
+Send some XSNt (0.2 or more is great) and some LTCt (10 is great) to Exchange A's addresses. Balances should appear in the wallet once the transactions are confirmed.
 
 ## Balance after funding the wallets
 
-Query Exchange A wallet balances for both `bitcoin` and `litecoin` after funding and make sure you see the amount as confirmed balance
+Query Exchange A wallet balances for both `xsm` and `litecoin` after funding and make sure you see the amount as confirmed balance
 
 ```shell
-$ xa-lnd-btc walletbalance
+$ xa-lnd-xsn walletbalance
 {
     "total_balance": "130000000",
     "confirmed_balance": "130000000",
