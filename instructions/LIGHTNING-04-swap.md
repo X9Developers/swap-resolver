@@ -6,23 +6,23 @@ This is the exciting part.
 
 ## Balance before the swap
 
-Let's check the BTC and LTC channel balances on Exchange A and B before we execute the swap. In the outputs below, `local_balance` is the balance on Exchange A's side of the channel and `remote_balance` on Exchange B's side.
+Let's check the XSN and LTC channel balances on Exchange A and B before we execute the swap. In the outputs below, `local_balance` is the balance on Exchange A's side of the channel and `remote_balance` on Exchange B's side.
 
 ```shell
-$ xa-lnd-btc listchannels
+$ xa-lnd-xsn listchannels
 {
     "channels": [
         {
             "active": true,
-            "remote_pubkey": "022b74059a18bb77c6c906377e92023cc40ae9695920df0d056fc95f135221e69f",
-            "channel_point": "246c05860d1589898f9a22317915c935b021a198ae93c1eacc6fc835ca96b5ac:0",
-            "chan_id": "1513035751963164672",
+            "remote_pubkey": "03e634d7505a8c2840700bbf38a696409e4ec73e59175f2b24abf9df8014fd2016",
+            "channel_point": "b8f58dd932368fe66e1dcbbdce7327a86bba4a3eadb37b0ada3206a3da8fe589:0",
+            "chan_id": "20530081113964544",
             "capacity": "16000000",
-            "local_balance": "12977556",
-            "remote_balance": "3000000",
-            "commit_fee": "22444",
+            "local_balance": "14999817",
+            "remote_balance": "1000000",
+            "commit_fee": "183",
             "commit_weight": "724",
-            "fee_per_kw": "31000",
+            "fee_per_kw": "253",
             "unsettled_balance": "0",
             "total_satoshis_sent": "0",
             "total_satoshis_received": "0",
@@ -34,6 +34,7 @@ $ xa-lnd-btc listchannels
         }
     ]
 }
+
 
 $ xa-lnd-ltc listchannels
 {
@@ -64,18 +65,18 @@ $ xa-lnd-ltc listchannels
 
 ## SWAP
 
-In our example, Exchange A is willing to sell 200 satoshi (0.000002 BTC) for 10000 litoshi (0.0001 LTC).
+In our example, Exchange A is willing to sell 200 satoshi (0.000002 XSN) for 10000 litoshi (0.0001 LTC).
 
 The command is executed against the `swap-resolver` which controls the `lnd`'s.
 
 ```shell
 $ cd $GOPATH/src/github.com/ExchangeUnion/swap-resolver
 
-$ go run cmd/resolver-cli/main.go --rpcserver localhost:7001 takeorder --order_id=123 --maker_amount 200 --maker_coin BTC --taker_amount 10000 --taker_coin=LTC
+$ go run cmd/resolver-cli/main.go --rpcserver localhost:7001 takeorder --order_id=123 --maker_amount 200 --maker_coin XSN --taker_amount 10000 --taker_coin=LTC
 
-2018/08/03 20:57:35 Starting takeOrder command -  (*swapresolver.TakeOrderReq)(0xc4200a5c80)(orderid:"123" taker_amount:10000 taker_coin:LTC maker_amount:200 )
-2018/08/03 20:57:36 Swap completed successfully.
-  Swap preImage is  c7256829d2a731c76f98a08fae6f40965fc642d417d8c8249d0d560830d93217 
+2018/10/10 16:10:33 Starting takeOrder command -  (*swapresolver.TakeOrderReq)(0xc420099f50)(orderid:"123" taker_amount:10000 taker_coin:LTC maker_amount:200 maker_coin:XSN )
+2018/10/10 16:10:34 Swap completed successfully.
+  Swap preImage is  32969e4f1a07a77b9468669979006e804501ef4789c599030e7427d14247d322
 ```
 
 ## Balance after the swap
@@ -83,24 +84,25 @@ $ go run cmd/resolver-cli/main.go --rpcserver localhost:7001 takeorder --order_i
 Let's see the impact in the channels. `local_balance` is the balance on Exchange A's side of the channel and `remote_balance` on Exchange B's side.
 
 ```shell
-$ xa-lnd-btc listchannels
+$ xa-lnd-xsn listchannels
+{
 {
     "channels": [
         {
             "active": true,
-            "remote_pubkey": "022b74059a18bb77c6c906377e92023cc40ae9695920df0d056fc95f135221e69f",
-            "channel_point": "246c05860d1589898f9a22317915c935b021a198ae93c1eacc6fc835ca96b5ac:0",
-            "chan_id": "1513035751963164672",
+            "remote_pubkey": "02492ed0c9be232bd2ba82888a8977c3de2a47ff3d6f12428ca860473d37b5ccc8",
+            "channel_point": "189148d065850eea0b192f0d8f71a9ec6a1ea2d45b0a3067540d1e4fc892e6bc:0",
+            "chan_id": "20905014579036160",
             "capacity": "16000000",
-            "local_balance": "12977356",
-            "remote_balance": "3000200",
-            "commit_fee": "22444",
+            "local_balance": "14999617",
+            "remote_balance": "1000200",
+            "commit_fee": "183",
             "commit_weight": "724",
-            "fee_per_kw": "31000",
+            "fee_per_kw": "253",
             "unsettled_balance": "0",
             "total_satoshis_sent": "200",
             "total_satoshis_received": "0",
-            "num_updates": "2",
+            "num_updates": "6",
             "pending_htlcs": [
             ],
             "csv_delay": 1922,
