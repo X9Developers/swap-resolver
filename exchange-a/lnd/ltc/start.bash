@@ -1,2 +1,1 @@
-/tmp/lnd --noseedbackup --rpclisten=localhost:10001 --listen=localhost:10011 --restlisten=8001 --datadir=data --logdir=logs  --nobootstrap --no-macaroons --litecoin.active --litecoin.testnet  --litecoin.node=litecoind --litecoind.rpcuser=ross --litecoind.rpcpass=ross --litecoind.zmqpubrawblock=tcp://127.0.0.1:29332 --litecoind.zmqpubrawtx=ipc:///tmp/litecoind.tx.raw --debuglevel=debug --alias="Exchange A LTC on 10001/10011"
-
+lnd --noseedbackup --rpclisten=localhost:10001 --listen=localhost:10011 --restlisten=8001 --datadir=data --logdir=logs  --nobootstrap --no-macaroons --litecoin.active --litecoin.testnet  --ltcd.rpcuser=xu --ltcd.rpcpass=xu --debuglevel=debug --alias="Exchange A LTC on 10001/10011"
