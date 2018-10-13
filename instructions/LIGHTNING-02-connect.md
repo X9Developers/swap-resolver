@@ -9,6 +9,9 @@ First, we extract Exchange B's pubKeys and bind them to `XB_XSN_PUBKEY` and `XB_
 ```shell
 XB_XSN_PUBKEY=`xb-lnd-xsn getinfo|grep identity_pubkey|cut -d '"' -f 4`
 XB_LTC_PUBKEY=`xb-lnd-ltc getinfo|grep identity_pubkey|cut -d '"' -f 4`
+
+or for btc 
+XB_BTC_PUBKEY=`xb-lnd-btc getinfo|grep identity_pubkey|cut -d '"' -f 4`
 ```
 
 
@@ -17,6 +20,9 @@ By using Exchange B's pubKey, host and port number, Exchange A establishes two c
 ```shell
 xa-lnd-xsn connect $XB_XSN_PUBKEY@127.0.0.1:20013
 xa-lnd-ltc connect $XB_LTC_PUBKEY@127.0.0.1:20011
+
+or for btc
+xa-lnd-btc connect $XB_BTC_PUBKEY@127.0.0.1:20012
 ```
 
 ### Exchange A post-connection
