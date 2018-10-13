@@ -1,4 +1,4 @@
-[ [index](/README.md) | [<- previous](/instructions/LIGHTNING-00-install.md) / [next ->](/instructions/LIGHTNING-02-connect.md) ]
+[ [index](/instructions/README.md) | [<- previous](/instructions/LIGHTNING-00-install.md) / [next ->](/instructions/LIGHTNING-02-connect.md) ]
 
 # Lightning nodes Setup
 
@@ -190,4 +190,4 @@ We are now ready with Exchange A's wallets. Exchange B is left with zero balance
 
 We are now ready to move on to the next step and connect our `lnd` instances.
 
-[ [index](/README.md) | [<- previous](/LIGHTNING-00-install.md) / [next ->](/LIGHTNING-02-connect.md) ]
+[ [index](/instructions/README.md) | [<- previous](/instructions/LIGHTNING-00-install.md) / [next ->](/instructions/LIGHTNING-02-connect.md) ]
