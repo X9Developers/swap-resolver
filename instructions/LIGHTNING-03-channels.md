@@ -1,4 +1,4 @@
-[ [index](/README.md) | [<- previous](/LIGHTNING-02-connect.md) / [next ->](/LIGHTNING-04-swap.md) ]
+[ [index](/README.md) | [<- previous](/instructions/LIGHTNING-02-connect.md) / [next ->](/instructions/LIGHTNING-04-swap.md) ]
 
 # Lightning Payment Channels
 
