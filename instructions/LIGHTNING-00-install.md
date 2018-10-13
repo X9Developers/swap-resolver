@@ -1,4 +1,4 @@
-[ [<- index](/instructions/README.md) / [next ->](/instructions/LIGHTNING-01-install.md) ]
+[ [<- index](/instructions/README.md) / [next ->](/instructions/LIGHTNING-01-peers.md) ]
 
 # Lightning
 This guide can be used to perform an instant atomic swap between two exchanges A & B on the lightning network(BTC, LTC, XSN are supported). The exchanges are running the lightning network daemon (`lnd`) and can be connected to the bitcoin, litecoin and xsn networks using `btcd`,` ltcd`, `bitcoind`, `litecoind`, `xsnd` daemons. The guide assumes that the reader has some lightning knowledge and is capable of setting up a simple network, fund wallets and open payment channels.
