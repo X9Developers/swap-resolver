@@ -146,7 +146,7 @@ $ xa-lnd-ltc walletbalance
 }
 ```
 
-## Create BTC and XSN addresses for deposit
+## Create LTC and XSN addresses for deposit
 
 Create Segwit addresses for both, `xsn` and `litecoin`
 ```shell
