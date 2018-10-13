@@ -13,6 +13,10 @@ alias xa-lnd-xsn='lncli --network testnet --rpcserver=localhost:10003 --no-macar
 alias xa-lnd-ltc='lncli --network testnet --rpcserver=localhost:10001 --no-macaroons'
 alias xb-lnd-xsn='lncli --network testnet --rpcserver=localhost:20003 --no-macaroons'
 alias xb-lnd-ltc='lncli --network testnet --rpcserver=localhost:20001 --no-macaroons'
+
+or for btc 
+alias xa-lnd-btc='lncli --network testnet --rpcserver=localhost:10002 --no-macaroons'
+alias xb-lnd-btc='lncli --network testnet --rpcserver=localhost:20002 --no-macaroons'
 ```
 
 Now we can use these aliases to communicate with the 4 `lnd` processes without the need to type long CLI arguments.
@@ -63,7 +67,6 @@ Open a terminal to set Exchange A's `xud` daemon
 cd $GOPATH/src/github.com/ExchangeUnion/swap-resolver/exchange-a/resolver/
 ./start.bash
 ```
-
 
 ## Exchange B
 ### Launch `lnd-xsn`
