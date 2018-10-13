@@ -1,4 +1,4 @@
-[ [index](/README.md) | [<- previous](/instructions/LIGHTNING-01-peers.md) / [next ->](/instructions/LIGHTNING-03-channels.md) ]
+[ [index](/instructions/README.md) | [<- previous](/instructions/LIGHTNING-01-peers.md) / [next ->](/instructions/LIGHTNING-03-channels.md) ]
 
 # Lightning Peer Connection
 In this step we connect Exchange A and Exchange B on network level so they become peers of each other. We create two parallel P2P networks, one for XSN and one for LTC.    
@@ -59,4 +59,4 @@ $ xa-lnd-ltc listpeers
 
 We are no ready to set up payment channels. 
 
-[ [index](/README.md) | [<- previous](/LIGHTNING-01-peers.md) / [next ->](/LIGHTNING-03-channels.md) ]
+[ [index](/instructions/README.md) | [<- previous](/instructions/LIGHTNING-01-peers.md) / [next ->](/instructions/LIGHTNING-03-channels.md) ]
