@@ -141,4 +141,4 @@ As we can see, Exchange A now owns 10000 litoshi more and 200 satoshi less.
 
 Yay!
 
-[ [index](/README.md) | [<- previous](/LIGHTNING-03-channels.md) ]
+[ [index](/instructions/README.md) | [<- previous](/instructions/LIGHTNING-03-channels.md) ]
