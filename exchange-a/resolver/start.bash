@@ -11,10 +11,10 @@ case "$1" in
     ./resolver --listen localhost:7001 --peer localhost:7002 --lnd-rpc-ltc localhost:10001 --lnd-rpc-btc localhost:10002
     ;;
   "btc_xsn")
-    ./resolver --listen localhost:7002 --peer localhost:7003 --lnd-rpc-btc localhost:10002 --lnd-rpc-xsn localhost:10003
+    ./resolver --listen localhost:7001 --peer localhost:7002 --lnd-rpc-btc localhost:10002 --lnd-rpc-xsn localhost:10003
     ;;
   "ltc_xsn")
-    ./resolver --listen localhost:7001 --peer localhost:7003 --lnd-rpc-ltc localhost:10001 --lnd-rpc-xsn localhost:10003
+    ./resolver --listen localhost:7001 --peer localhost:7002 --lnd-rpc-ltc localhost:10001 --lnd-rpc-xsn localhost:10003
     ;;
   *)
     echo "Wrong argument passed, supported modes to swap are: btc_ltc, btc_xsn, ltc_xsn"
