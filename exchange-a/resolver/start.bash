@@ -4,7 +4,7 @@ if [ $# -eq 0 ]
     exit 1
 fi
 
-cd $GOPATH/go/src/github.com/ExchangeUnion/swap-resolver
+cd $GOPATH/src/github.com/ExchangeUnion/swap-resolver
 
 case "$1" in
   "btc_ltc")
