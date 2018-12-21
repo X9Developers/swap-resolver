@@ -3,11 +3,27 @@
 
 [[projects]]
   branch = "resolver"
-  digest = "1:1800f165ba6376cdd4395a3049dc267d9680b476578d95c67952eba05848d0be"
+  digest = "1:f5764094fa31f99ff600809ce8acae7ef5cc47f5a5846f67a3660daecc1ff243"
   name = "github.com/ExchangeUnion/lnd"
   packages = ["lnrpc"]
   pruneopts = "UT"
-  revision = "43acf273e60129b93a2f5030d82e4d1a2b7944b1"
+  revision = "ac8689c634d1fa6eb4c694e11ea0472bfe81e8ea"
+
+[[projects]]
+  branch = "master"
+  digest = "1:8fdba1bd9f9eec466e983232ccd94a991bcf2952218efef61539668a7cae640f"
+  name = "github.com/ExchangeUnion/swap-resolver"
+  packages = ["swapp2p"]
+  pruneopts = "UT"
+  revision = "8a91be83464be0ab0fa460d0b997a1a5e50d96ea"
+
+[[projects]]
+  digest = "1:44ce61cf70fcd6fcecfa5d99763a038233a6a490b72d4941b60d3be8c183da97"
+  name = "github.com/X9Developers/swap-resolver"
+  packages = ["swapp2p"]
+  pruneopts = "UT"
+  revision = "eafd0abf250f028da24f91c261e12d513e7e1f95"
+  version = "v1.0.0"
 
 [[projects]]
   digest = "1:10eead28c93f58b281c9721ef6200875dad16ca9032d227490f58082cb5d1853"
@@ -165,6 +181,8 @@
   analyzer-version = 1
   input-imports = [
     "github.com/ExchangeUnion/lnd/lnrpc",
+    "github.com/ExchangeUnion/swap-resolver/swapp2p",
+    "github.com/X9Developers/swap-resolver/swapp2p",
     "github.com/btcsuite/btcutil",
     "github.com/davecgh/go-spew/spew",
     "github.com/dchest/uniuri",
