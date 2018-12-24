@@ -16,7 +16,7 @@ import (
 
 	"github.com/ExchangeUnion/lnd/lnrpc"
 	pb "github.com/ExchangeUnion/lnd/lnrpc"
-	pbp2p "github.com/X9Developers/swap-resolver/swapp2p"
+	pbp2p "github.com/ExchangeUnion/swap-resolver/swapp2p"
 	"github.com/btcsuite/btcutil"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/urfave/cli"

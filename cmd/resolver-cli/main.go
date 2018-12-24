@@ -1,28 +1,41 @@
 package main
 
 import (
+	"encoding/hex"
+	"fmt"
 	"log"
+	"os"
 	"time"
+
+	pb "github.com/ExchangeUnion/swap-resolver/swapp2p"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/urfave/cli"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
-	pb "github.com/ExchangeUnion/swap-resolver/swapp2p"
-	"os"
-	"fmt"
-	"encoding/hex"
-	"github.com/davecgh/go-spew/spew"
 )
 
 const (
-	defaultRpcPort          = "10000"
-	defaultRpcHostPort      = "localhost:" + defaultRpcPort
+	//default rpc settings
+	defaultRpcPort     = "10000"
+	defaultRpcHostPort = "localhost:" + defaultRpcPort
+
+	//coin options for resolver
+	CoinBTC = "BTC"
+	CoinLTC = "LTC"
+	CoinXSN = "XSN"
+
+	//context flags
+	ContextOrderId     = "order_id"
+	ContextTakerAmount = "taker_amount"
+	ContextMakerAmount = "maker_amount"
+	ContextTakerCoin   = "taker_coin"
+	ContextMakerCoin   = "maker_coin"
 )
 
 var (
 	//Commit stores the current commit hash of this build. This should be
 	//set using -ldflags during compilation.
 	Commit string
-
 )
 
 func main() {
@@ -38,88 +51,45 @@ func main() {
 		},
 	}
 	app.Commands = []cli.Command{
-		takeordercommand,
+		takeOrderCmd,
 	}
 
 	if err := app.Run(os.Args); err != nil {
-		fatal(err)
+		handleFatal(err)
 	}
 }
 
-func fatal(err error) {
-	fmt.Fprintf(os.Stderr, "[lncli] %v\n", err)
-	os.Exit(1)
-}
-
-func getClient(ctx *cli.Context) (pb.P2PClient, func()) {
-	conn := getClientConn(ctx, false)
-
-	cleanUp := func() {
-		conn.Close()
-	}
-
-	return pb.NewP2PClient(conn), cleanUp
-}
-
-func getClientConn(ctx *cli.Context, skipMacaroons bool) *grpc.ClientConn {
-	var opts []grpc.DialOption
-	//if *tls {
-	//if *caFile == "" {
-	//	*caFile = testdata.Path("ca.pem")
-	//}
-	//creds, err := credentials.NewClientTLSFromFile(*caFile, *serverHostOverride)
-	//if err != nil {
-	//	log.Fatalf("Failed to create TLS credentials %v", err)
-	//}
-	//opts = append(opts, grpc.WithTransportCredentials(creds))
-	//} else {
-	opts = append(opts, grpc.WithInsecure())
-	//}
-	conn, err := grpc.Dial(ctx.GlobalString("rpcserver"), opts...)
-
-	if err != nil {
-		fatal(err)
-	}
-
-	return conn
-}
-
-
-var takeordercommand = cli.Command{
+var takeOrderCmd = cli.Command{
 	Name:     "takeorder",
 	Category: "Order",
 	Usage:    "Instruct resolver to take an order.",
-	Description: `
-	`,
 	Flags: []cli.Flag{
 		cli.StringFlag{
-			Name:  "order_id",
+			Name:  ContextOrderId,
 			Usage: "the chain to generate an address for",
 		},
 		cli.Int64Flag{
-			Name:  "maker_amount",
+			Name:  ContextMakerAmount,
 			Usage: "the number of coins denominated in {l/s}atoshis the maker is expecting to get",
 		},
 		cli.StringFlag{
-			Name:  "maker_coin",
+			Name:  ContextMakerCoin,
 			Usage: "the coins which the maker is expecting to get",
 		},
 		cli.Int64Flag{
-			Name:  "taker_amount",
+			Name:  ContextTakerAmount,
 			Usage: "the number of coins denominated in {l/s}atoshis the taker is expecting to get",
 		},
 		cli.StringFlag{
-			Name:  "taker_coin",
+			Name:  ContextTakerCoin,
 			Usage: "the coins which the taker is expecting to get",
 		},
-
 	},
-
 	Action: takeOrder,
 }
 
-func takeOrder(ctx *cli.Context) error{
-
+//takeOrder enriches a TakeOrderRequest and sends a request to the p2p swap client.
+func takeOrder(ctx *cli.Context) (err error) {
 	client, cleanUp := getClient(ctx)
 	defer cleanUp()
 
@@ -129,72 +99,98 @@ func takeOrder(ctx *cli.Context) error{
 		return nil
 	}
 
-	req := &pb.TakeOrderReq{
+	err = validateFlags(ctx)
+	if err != nil {
+		return err
 	}
 
-	if !ctx.IsSet("order_id"){
-		return fmt.Errorf("order_id argument missing")
-	}
-	req.Orderid = ctx.String("order_id")
-
-	if !ctx.IsSet("maker_amount"){
-		return fmt.Errorf("maker_amount argument missing")
-	}
-	req.MakerAmount = int64(ctx.Int("maker_amount"))
-
-	if !ctx.IsSet("maker_coin"){
-		return fmt.Errorf("maker_coin argument missing")
+	req := &pb.TakeOrderReq{}
+	req.Orderid = ctx.String(ContextOrderId)
+	req.MakerAmount = int64(ctx.Int(ContextMakerAmount))
+	req.TakerAmount = int64(ctx.Int(ContextTakerAmount))
+	req.MakerCoin, err = getCoinType(ContextMakerCoin, ctx.String(ContextMakerCoin))
+	if err != nil {
+		return err
 	}
 
-	switch ctx.String("maker_coin") {
-	case "BTC":
-		req.MakerCoin = pb.CoinType_BTC
-	case "LTC":
-		req.MakerCoin = pb.CoinType_LTC
-	case "XSN":
-                req.MakerCoin = pb.CoinType_XSN
-	default:
-		return fmt.Errorf("Invalid maker coin %v. Valid values are BTC, LTC and XSN only.", ctx.String("maker_coin"))
+	req.TakerCoin, err = getCoinType(ContextTakerCoin, ctx.String(ContextTakerCoin))
+	if err != nil {
+		return err
 	}
 
-	if !ctx.IsSet("taker_amount"){
-		return fmt.Errorf("taker_amount argument missing")
-	}
-	req.TakerAmount = int64(ctx.Int("taker_amount"))
-
-	if !ctx.IsSet("taker_coin"){
-		return fmt.Errorf("taker_coin argument missing")
-	}
-	switch ctx.String("taker_coin") {
-	case "BTC":
-		req.TakerCoin = pb.CoinType_BTC
-	case "LTC":
-		req.TakerCoin = pb.CoinType_LTC
-	case "XSN":
-                req.TakerCoin = pb.CoinType_XSN
-	default:
-		return fmt.Errorf("Invalid taker coin %v. Valid values are BTC, LTC and XSN only.", ctx.String("taker_coin"))
+	if req.MakerCoin == req.TakerCoin {
+		return fmt.Errorf("maker and taker coin must not be the same ([%s])", req.MakerCoin.String())
 	}
 
-	if req.MakerCoin == req.TakerCoin{
-		return fmt.Errorf("Maker and Taker coins can't be the same")
-	}
-
-
-	log.Printf("Starting takeOrder command -  %s",spew.Sdump(req))
+	log.Printf("starting takeOrder command -  %s \n", spew.Sdump(req))
 	ctxt, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
+
 	resp, err := client.TakeOrder(ctxt, req)
 	if err != nil {
 		log.Fatalf("%v.ResolveHash(_) = _, %v: ", client, err)
+		return err
 	}
-	log.Printf("Swap completed successfully.\n  Swap preImage is  %v \n",hex.EncodeToString(resp.RPreimage))
-
-
-	return nil;
-
+	log.Printf("swap completed successfully.\n  Swap preImage is %s \n", hex.EncodeToString(resp.RPreimage))
+	return nil
 }
 
+//validateFlags checks that all mandatory fields are set
+func validateFlags(ctx *cli.Context) (err error) {
+	if !ctx.IsSet(ContextOrderId) {
+		return fmt.Errorf("%s argument missing", ContextOrderId)
+	}
+	if !ctx.IsSet(ContextMakerCoin) {
+		return fmt.Errorf("%s argument missing", ContextMakerCoin)
+	}
+	if !ctx.IsSet(ContextTakerAmount) {
+		return fmt.Errorf("%s taker_amount argument missing", ContextTakerAmount)
+	}
+	if !ctx.IsSet(ContextMakerCoin) {
+		return fmt.Errorf("%s maker_coin argument missing", ContextMakerCoin)
+	}
+	if !ctx.IsSet(ContextTakerCoin) {
+		return fmt.Errorf("%s taker_coin argument missing", ContextTakerCoin)
+	}
+	return nil
+}
 
+//getCoinType returns CoinType based on the context-value for key maker_coin or taker_coin.
+func getCoinType(ctxKey string, ctxVal string) (pb.CoinType, error) {
+	switch ctxKey {
+	case CoinBTC:
+		return pb.CoinType_BTC, nil
+	case CoinLTC:
+		return pb.CoinType_LTC, nil
+	case CoinXSN:
+		return pb.CoinType_XSN, nil
+	}
+	return -1, fmt.Errorf("[key %s, value: %s] not in supported list [BTC, LTC, XSN]", ctxKey, ctxVal)
+}
 
+//handleFatal prints error and exits application
+func handleFatal(err error) {
+	fmt.Fprintf(os.Stderr, "[lncli] %v\n", err)
+	os.Exit(1)
+}
 
+//getClient returns a swap P2P client
+func getClient(ctx *cli.Context) (pb.P2PClient, func()) {
+	conn := getClientConn(ctx, false)
+	cleanUp := func() {
+		conn.Close()
+	}
+	return pb.NewP2PClient(conn), cleanUp
+}
+
+//getClientConn returns a grpc client connection
+func getClientConn(ctx *cli.Context, skipMacaroons bool) *grpc.ClientConn {
+	var opts []grpc.DialOption
+
+	opts = append(opts, grpc.WithInsecure())
+	conn, err := grpc.Dial(ctx.GlobalString("rpcserver"), opts...)
+	if err != nil {
+		handleFatal(err)
+	}
+	return conn
+}

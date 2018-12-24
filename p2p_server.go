@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/ExchangeUnion/lnd/lnrpc"
-	pbp2p "github.com/X9Developers/swap-resolver/swapp2p"
+	pbp2p "github.com/ExchangeUnion/swap-resolver/swapp2p"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/dchest/uniuri"
 	"golang.org/x/net/context"
